@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Expediente {
+  id          Int      @id @default(autoincrement())
+  numero      String   @unique
+  anio        Int
+  fecha       DateTime
+  asunto      String
+  estado      Estado   @relation(fields: [estadoId], references: [id])
+  estadoId    Int
+  tipo        Tipo     @relation(fields: [tipoId], references: [id])
+  tipoId      Int
+  iniciador   String
+  observaciones String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Estado {
+  id          Int         @id @default(autoincrement())
+  nombre      String      @unique
+  expedientes Expediente[]
+}
+
+model Tipo {
+  id          Int         @id @default(autoincrement())
+  nombre      String      @unique
+  expedientes Expediente[]
+}
